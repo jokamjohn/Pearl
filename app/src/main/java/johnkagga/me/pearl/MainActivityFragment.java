@@ -24,6 +24,7 @@ public class MainActivityFragment extends Fragment {
 
     private TextView mTextView;
     private DatabaseReference mDatabaseReference;
+    private String mUserId = "bnsdbbabdafbdasbasdf";
 
     public MainActivityFragment() {
     }
@@ -38,7 +39,16 @@ public class MainActivityFragment extends Fragment {
         //Get a reference to the real time Firebase database
         mFirebaseDatabase = FirebaseDatabase.getInstance();
 
+
         return rootView;
+    }
+
+    /**
+     * Update the username of the user.
+     */
+    private void updateUsername() {
+        mDatabaseReference = mFirebaseDatabase.getReference();
+        mDatabaseReference.child(Constants.USERS).child(mUserId).child(Constants.USERNAME).setValue("Aysher Abbas");
     }
 
     /**
@@ -49,8 +59,7 @@ public class MainActivityFragment extends Fragment {
     private void setUserProfile() {
         mDatabaseReference = mFirebaseDatabase.getReference();
         User user = new User("John Kagga", "Johnkagga@gmail.com");
-        String userId = "bnsdbbabdafbdasbasdf";
-        mDatabaseReference.child(Constants.USERS).child(userId).setValue(user);
+        mDatabaseReference.child(Constants.USERS).child(mUserId).setValue(user);
     }
 
     /**
