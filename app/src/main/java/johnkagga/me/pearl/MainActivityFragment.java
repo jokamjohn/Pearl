@@ -1,7 +1,7 @@
 package johnkagga.me.pearl;
 
-import android.support.v4.app.Fragment;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,15 +13,17 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import johnkagga.me.pearl.models.User;
+
 /**
  * A placeholder fragment containing a simple view.
  */
 public class MainActivityFragment extends Fragment {
 
     private FirebaseDatabase mFirebaseDatabase;
-    private DatabaseReference mDatabaseMessageReference;
 
     private TextView mTextView;
+    private DatabaseReference mDatabaseReference;
 
     public MainActivityFragment() {
     }
@@ -35,10 +37,30 @@ public class MainActivityFragment extends Fragment {
 
         //Get a reference to the real time Firebase database
         mFirebaseDatabase = FirebaseDatabase.getInstance();
-        mDatabaseMessageReference = mFirebaseDatabase.getReference(Constants.MESSAGES_NODE);
-        mDatabaseMessageReference.setValue("Kagga John");
 
-        mDatabaseMessageReference.addValueEventListener(new ValueEventListener() {
+        return rootView;
+    }
+
+    /**
+     * Add User profile data at a users node in the database.
+     * UserId is the unique key for the child.
+     * user is the value of the data.
+     */
+    private void setUserProfile() {
+        mDatabaseReference = mFirebaseDatabase.getReference();
+        User user = new User("John Kagga", "Johnkagga@gmail.com");
+        String userId = "bnsdbbabdafbdasbasdf";
+        mDatabaseReference.child(Constants.USERS).child(userId).setValue(user);
+    }
+
+    /**
+     * Basic data saving
+     */
+    private void basicWriteAndRead() {
+        mDatabaseReference = mFirebaseDatabase.getReference(Constants.MESSAGES_NODE);
+        mDatabaseReference.setValue("Kagga John");
+
+        mDatabaseReference.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 String value = dataSnapshot.getValue(String.class);
@@ -50,9 +72,5 @@ public class MainActivityFragment extends Fragment {
 
             }
         });
-
-
-
-        return rootView;
     }
 }
