@@ -2,6 +2,7 @@ package johnkagga.me.pearl;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,6 +12,8 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.MutableData;
+import com.google.firebase.database.Transaction;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.HashMap;
@@ -25,6 +28,7 @@ import johnkagga.me.pearl.models.User;
  */
 public class MainActivityFragment extends Fragment {
 
+    private static final String TAG = MainActivityFragment.class.getSimpleName();
     private FirebaseDatabase mFirebaseDatabase;
     private DatabaseReference mDatabaseReference;
 
@@ -47,9 +51,52 @@ public class MainActivityFragment extends Fragment {
         //Get a reference to the real time Firebase database
         mFirebaseDatabase = FirebaseDatabase.getInstance();
 
-
+        onStartClicked();
 
         return rootView;
+    }
+
+    private void onStartClicked() {
+        mDatabaseReference = mFirebaseDatabase.getReference().child(Constants.POSTS).child("-KKETfn8mIaXrTEhRw6J");
+
+        mDatabaseReference.runTransaction(new Transaction.Handler() {
+            @Override
+            public Transaction.Result doTransaction(MutableData mutableData) {
+
+                Post post = mutableData.getValue(Post.class);
+
+                if (post == null)
+                {
+                    return Transaction.success(mutableData);
+                }
+
+                if (post.stars.containsKey(getUid()))
+                {
+                    post.starCount = post.starCount - 1; //Subtract the start
+                    post.stars.remove(getUid()); //Remove the user from the list
+                }
+                else {
+                    //Add a star and a user.
+                    post.starCount = post.starCount + 1;
+                    post.stars.put(getUid(), true);
+                }
+
+                // Set value and report transaction success
+                mutableData.setValue(post);
+
+                return Transaction.success(mutableData);
+            }
+
+            @Override
+            public void onComplete(DatabaseError databaseError, boolean b, DataSnapshot dataSnapshot) {
+                // Transaction completed
+                Log.d(TAG, "postTransaction:onComplete:" + databaseError);
+            }
+        });
+    }
+
+    private String getUid() {
+        return "user-id00000000-0000-000a-0000-00000000000c";
     }
 
     /**
@@ -123,4 +170,6 @@ public class MainActivityFragment extends Fragment {
             }
         });
     }
+
+
 }
