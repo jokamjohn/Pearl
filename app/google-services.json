@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "216388624088",
+    "firebase_url": "https://pearl-jokam.firebaseio.com",
+    "project_id": "pearl-jokam",
+    "storage_bucket": "pearl-jokam.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:216388624088:android:9e714cbee0f5fee4",
+        "android_client_info": {
+          "package_name": "johnkagga.me.pearl"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "216388624088-0vb6ufdu2qppgetsn434jrnjgfpvi42l.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "johnkagga.me.pearl",
+            "certificate_hash": "F7F728873B230310D6CF3DE950CD7B36D77769EC"
+          }
+        },
+        {
+          "client_id": "216388624088-2pc57tain5f6o6g41r34kllfjpt9u7m9.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCN0Fa6R0J1guClvkNkM_ogwsgPtIApa6Y"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "216388624088-2pc57tain5f6o6g41r34kllfjpt9u7m9.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
