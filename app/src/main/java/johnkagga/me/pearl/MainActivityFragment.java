@@ -13,6 +13,8 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.MutableData;
+import com.google.firebase.database.Query;
+import com.google.firebase.database.ServerValue;
 import com.google.firebase.database.Transaction;
 import com.google.firebase.database.ValueEventListener;
 
@@ -51,13 +53,91 @@ public class MainActivityFragment extends Fragment {
         //Get a reference to the real time Firebase database
         mFirebaseDatabase = FirebaseDatabase.getInstance();
 
-        onStartClicked();
+        lastOnline();
+
 
         return rootView;
     }
 
+    /**
+     * Get the last online time for the user.
+     */
+    private void lastOnline() {
+        DatabaseReference lastOnlineReference = mFirebaseDatabase.getReference(Constants.USERS + "/" + getUid() + "/" + "lastOnline");
+        lastOnlineReference.onDisconnect().setValue(ServerValue.TIMESTAMP);
+    }
+
+    /**
+     * Determine the internet connectivity of the client
+     */
+    private void connectionStatus() {
+        DatabaseReference presence = mFirebaseDatabase.getReference(Constants.CONNECTIVITY);
+        presence.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                boolean connected = dataSnapshot.getValue(Boolean.class);
+
+                if (connected)
+                {
+                    mTextView.setText("connected");
+                }else {
+                    mTextView.setText("disconnected");
+                }
+
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                System.err.println("Listener was cancelled");
+            }
+        });
+    }
+
+    // Last 100 posts, these are automatically the 100 most recent
+    // due to sorting by push() keys
+    private void Recent100Posts() {
+        Query recentPostsQuery = getDatabaseReference().child(Constants.POSTS)
+                .limitToFirst(100);
+    }
+
+    /**
+     * Order posts by starCount.
+     */
+    private void queryByPostStarCount() {
+        Query myTopPosts = getDatabaseReference().child(Constants.USER_POSTS).child(getUid())
+                .orderByChild(Constants.POST_STAR_COUNT);
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+//        getUserProfile(); //Use here because value rarely changes
+        connectionStatus();
+
+    }
+
+
+    /**
+     * retrieve the user profile from firebase.
+     */
+    private void getUserProfile() {
+        getDatabaseReference().child(Constants.USERS).child(getUid()).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                User user = dataSnapshot.getValue(User.class);
+                String text = "Email " + user.getEmail() + "Username " + user.getUsername();
+                mTextView.setText(text);
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                Log.w(TAG, "getUser:onCancelled", databaseError.toException());
+            }
+        });
+    }
+
     private void onStartClicked() {
-        mDatabaseReference = mFirebaseDatabase.getReference().child(Constants.POSTS).child("-KKETfn8mIaXrTEhRw6J");
+        mDatabaseReference = mFirebaseDatabase.getReference().child(Constants.POSTS).child("-KKESyu0upji5TF_lduu");
 
         mDatabaseReference.runTransaction(new Transaction.Handler() {
             @Override

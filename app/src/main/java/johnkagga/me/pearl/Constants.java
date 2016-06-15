@@ -9,4 +9,8 @@ public class Constants {
 
     public static final String POSTS_PATH = "/posts/";
     public static final String USER_POSTS_PATH = "/user-posts/";
+    public static final String USER_POSTS = "user-posts";
+    public static final String POST_STAR_COUNT = "starCount";
+    public static final String CONNECTIVITY = ".info/connected";
+    public static final String PRESENCE = "presence";
 }
